@@ -29,13 +29,25 @@ namespace ProjectWPF
             if (e.ChangedButton == MouseButton.Left && e.GetPosition(this).Y < 20)
                 DragMove();
         }
-        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        private void IncomeButton_Checked(object sender, RoutedEventArgs e)
         {
-            Close();
+            mainFrame.Navigate(new Uri("Pages/IncomePage.xaml", UriKind.Relative));
         }
-        private void MinimizeButton_Click(object sender, RoutedEventArgs e)
+        private void ExpensesButton_Checked(object sender, RoutedEventArgs e)
         {
-            WindowState = WindowState.Minimized;
+            mainFrame.Navigate(new Uri("Pages/ExpensesPage.xaml", UriKind.Relative));
+        }
+        private void SavingsButton_Checked(object sender, RoutedEventArgs e)
+        {
+            mainFrame.Navigate(new Uri("Pages/SavingsPage.xaml", UriKind.Relative));
+        }
+        private void ReportsButton_Checked(object sender, RoutedEventArgs e)
+        {
+            mainFrame.Navigate(new Uri("Pages/ReportsPage.xaml", UriKind.Relative));
+        }
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            mainFrame.Navigate(new Uri("Pages/IncomePage.xaml", UriKind.Relative));
         }
     }
 }
