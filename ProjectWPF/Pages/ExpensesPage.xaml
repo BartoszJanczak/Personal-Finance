@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:ProjectWPF.Pages"
       xmlns:fa="http://schemas.fontawesome.io/icons/"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="700" d:DesignWidth="820"
       Title="ExpensesPage"
       Background="Transparent">
     <Grid Background="#032466">
@@ -19,7 +19,7 @@
                    VerticalAlignment="Center"
                    Foreground="White"
                    FontSize="30"
-                   Margin="284,0,284,0" Grid.Column="1" RenderTransformOrigin="0.213,0.304">
+                   HorizontalAlignment="Center" Grid.Column="1" RenderTransformOrigin="0.213,0.304">
             </TextBlock>
         </Grid>
         <Button Grid.Column="1" Style="{StaticResource NoChromeButtonStyle}" Margin="0,10,50,0" 
@@ -30,5 +30,67 @@
         VerticalAlignment="Top" HorizontalAlignment="Right" Click="CloseButton_Click">
             <fa:ImageAwesome Icon="Times" Style="{StaticResource MenuButtonIcon}"/>
         </Button>
+        <Grid Grid.Row="1">
+            <Label Content="Expense name" Foreground="White" FontSize="25" Margin="80,10,451,576" />
+            <TextBox Margin="80,54,451,532" FontSize="20" Foreground="Black" Background="#9aa7c1" Height="30"></TextBox>
+            <Label Content="Amount" Foreground="White" FontSize="25" Margin="431,10,78,577" />
+            <TextBox Margin="431,53,100,532" FontSize="20" Foreground="Black" Background="#9aa7c1" Height="30"/>
+            <Label Content="Category" Foreground="White" FontSize="25" Margin="80,103,423,481" />
+            <ComboBox Style="{DynamicResource ComboBoxStyle2}" Margin="80,149,451,439" FontSize="20" SelectedIndex="0" Background="#9aa7c1" Height="35">
+                <ComboBox.Resources>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}" Color="#9aa7c1"></SolidColorBrush>
+                </ComboBox.Resources>
+                <ComboBoxItem Content="Food" />
+                <ComboBoxItem Content="Bills" />
+                <ComboBoxItem Content="Transport" />
+                <ComboBoxItem Content="Entertainment" />
+                <ComboBoxItem Content="Education" />
+            </ComboBox>
+            <Label Content="Date" Foreground="White" FontSize="25" Margin="431,103,100,481" />
+            <DatePicker Text="19.03.2023" Margin="431,149,100,439" FontSize="25" BorderThickness="0" Background="#9aa7c1" Height="35">
+                <DatePicker.Style>
+                    <Style TargetType="{x:Type DatePicker}">
+                        <Style.Resources>
+                            <Style TargetType="DatePickerTextBox">
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <SolidColorBrush Color="White" Opacity="0"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Style.Resources>
+                    </Style>
+                </DatePicker.Style>
+            </DatePicker>
+            <Button Style="{StaticResource NoChromeButtonStyle}" Content="Save" Height="40" Foreground="Black" Background="#ccd3e0" FontSize="25" Margin="332,210,332,380" />
+            <Label Content="Expenses Table" Foreground="White" FontSize="25" Margin="80,280,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
+            <Label Content="Filter" Foreground="White" FontSize="20" Margin="519,280,229,315" />
+            <ComboBox Style="{DynamicResource ComboBoxStyle2}" Margin="591,280,100,315" FontSize="20" SelectedIndex="0" Background="#9aa7c1">
+                <ComboBox.Resources>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}" Color="#9aa7c1"></SolidColorBrush>
+                </ComboBox.Resources>
+                <ComboBoxItem Content="Food" />
+                <ComboBoxItem Content="Bills" />
+                <ComboBoxItem Content="Transport" />
+                <ComboBoxItem Content="Entertainment" />
+                <ComboBoxItem Content="Education" />
+            </ComboBox>
+            <DataGrid ItemsSource="{Binding People}" Margin="80,325,80,61" FontSize="20" Background="#6E7E91" GridLinesVisibility="All">
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="#D9D9D9"/>
+                        <Setter Property="Foreground" Value="Black"/>
+                        <Setter Property="Width" Value="165"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                    </Style>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name" Binding="{Binding NameExpense}" />
+                    <DataGridTextColumn Header="Amount" Binding="{Binding AmountExpense}" />
+                    <DataGridTextColumn Header="Category" Binding="{Binding CategoryExpense}" />
+                    <DataGridTextColumn Header="Date" Binding="{Binding DateExpense}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
     </Grid>
 </Page>

@@ -6,20 +6,21 @@
       xmlns:local="clr-namespace:ProjectWPF.Pages"
       xmlns:fa="http://schemas.fontawesome.io/icons/"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="700" d:DesignWidth="820"
       Title="SavingsPage"
       Background="Transparent">
     <Grid Background="#032466">
         <Grid.RowDefinitions>
             <RowDefinition Height="70" />
-            <RowDefinition />
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" Background="#011845">
             <TextBlock Text="Savings"
                    VerticalAlignment="Center"
+                   HorizontalAlignment="Center"
                    Foreground="White"
                    FontSize="30"
-                   Margin="284,0,284,0" Grid.Column="1" RenderTransformOrigin="0.213,0.304">
+                   Grid.Column="1" RenderTransformOrigin="0.213,0.304">
             </TextBlock>
         </Grid>
         <Button Grid.Column="1" Style="{StaticResource NoChromeButtonStyle}" Margin="0,10,50,0" 
@@ -30,5 +31,28 @@
         VerticalAlignment="Top" HorizontalAlignment="Right" Click="CloseButton_Click">
             <fa:ImageAwesome Icon="Times" Style="{StaticResource MenuButtonIcon}"/>
         </Button>
+        <Grid Grid.Row="1">
+            <Label Content="Total savings" Foreground="White" FontSize="30" Margin="0,10,0,362" HorizontalAlignment="Center"/>
+            <Label Content="             0 $" Margin="274,64,274,517" Foreground="White" FontSize="30" Background="Green"/>
+            <DataGrid ItemsSource="{Binding People}" Margin="160,315,160,71" FontSize="20" Background="#6E7E91" GridLinesVisibility="All">
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="#D9D9D9"/>
+                        <Setter Property="Foreground" Value="Black"/>
+                        <Setter Property="Width" Value="125"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                    </Style>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Amount" Binding="{Binding NameSavings}" />
+                    <DataGridTextColumn Header="Date" Binding="{Binding DateSavings}" />
+                    <DataGridTextColumn Header="Category" Binding="{Binding CategorySavings}" />
+                    <DataGridTextColumn Header="Source" Binding="{Binding SourceSavings}" />
+                </DataGrid.Columns>
+            </DataGrid>
+            <Label Content="Estimated savings" Foreground="White" FontSize="30" Margin="0,137,0,362" HorizontalAlignment="Center"/>
+            <Label Content="             0 $" Margin="274,190,274,390" Foreground="White" FontSize="30" Background="Green" />
+            <Label Content="Savings table" Foreground="White" FontSize="30" Margin="0,258,0,320" HorizontalAlignment="Center"/>
+        </Grid>
     </Grid>
 </Page>
