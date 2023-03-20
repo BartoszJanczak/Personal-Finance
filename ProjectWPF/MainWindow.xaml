@@ -37,9 +37,17 @@
             </Grid>
             <StackPanel Grid.Row="1" Background="#022059">
                 <!--<fa:ImageAwesome Icon="Home" Style="{StaticResource MenuButtonIcon}"/>-->
-                <RadioButton Content="Income"
+                <RadioButton Content="Home"
                              IsChecked="True"
                              Tag="Home"
+                             Height="50"
+                             Foreground="White"
+                             FontSize="15"
+                             Style="{StaticResource MenuButtonTheme}"
+                             x:Name="HomeRadioButton"
+                             Click="HomeButton_Checked"/>
+                <RadioButton Content="Income"
+                             Tag="IncomePage"
                              Height="50"
                              Foreground="White"
                              FontSize="15"

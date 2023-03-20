@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LiveCharts;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,10 @@ namespace ProjectWPF.Pages
         public ReportsPage()
         {
             InitializeComponent();
+            PointLabel = chartPoint =>
+                string.Format("{0} ({1:P})", chartPoint.Y, chartPoint.Participation);
+
+            DataContext = this;
         }
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
@@ -33,6 +38,23 @@ namespace ProjectWPF.Pages
         {
             Window window = Window.GetWindow(this);
             window.WindowState = WindowState.Minimized;
+        }
+        public Func<ChartPoint, string> PointLabel { get; set; }
+
+        private void YearlyChart_Button(object sender, RoutedEventArgs e)
+        {
+            if (IncomeYearlyChart.Visibility == Visibility.Hidden)
+            {
+                IncomeYearlyChart.Visibility = Visibility.Visible;
+                IncomeMonthlyChart.Visibility = Visibility.Hidden;
+                YearlyChart.Content = "Monthly";
+            }
+            else if (IncomeYearlyChart.Visibility == Visibility.Visible)
+            {
+                IncomeYearlyChart.Visibility = Visibility.Hidden;
+                IncomeMonthlyChart.Visibility = Visibility.Visible;
+                YearlyChart.Content = "Yearly";
+            }
         }
     }
 }

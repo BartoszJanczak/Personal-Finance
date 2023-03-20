@@ -29,6 +29,10 @@ namespace ProjectWPF
             if (e.ChangedButton == MouseButton.Left && e.GetPosition(this).Y < 20)
                 DragMove();
         }
+        private void HomeButton_Checked(object sender, RoutedEventArgs e)
+        {
+            mainFrame.Navigate(new Uri("Pages/HomePage.xaml", UriKind.Relative));
+        }
         private void IncomeButton_Checked(object sender, RoutedEventArgs e)
         {
             mainFrame.Navigate(new Uri("Pages/IncomePage.xaml", UriKind.Relative));
@@ -47,7 +51,7 @@ namespace ProjectWPF
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            mainFrame.Navigate(new Uri("Pages/IncomePage.xaml", UriKind.Relative));
+            mainFrame.Navigate(new Uri("Pages/HomePage.xaml", UriKind.Relative));
         }
     }
 }
