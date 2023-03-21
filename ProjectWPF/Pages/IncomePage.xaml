@@ -35,7 +35,7 @@
             <Label Content="Income name" Foreground="White" FontSize="25" Margin="80,10,451,576" />
             <TextBox Margin="80,54,451,532" FontSize="20" Foreground="Black" Background="#9aa7c1" Height="30"></TextBox>
             <Label Content="Amount" Foreground="White" FontSize="25" Margin="431,10,78,577" />
-            <TextBox Margin="431,53,100,532" FontSize="20" Foreground="Black" Background="#9aa7c1" Height="30"/>
+            <TextBox Margin="431,53,100,532" FontSize="20" Foreground="Black" Background="#9aa7c1" Height="30" PreviewKeyDown="AmountIncome_PreviewKeyDown"/>
             <Label Content="Category" Foreground="White" FontSize="25" Margin="80,103,423,481" />
             <ComboBox Style="{DynamicResource ComboBoxStyle2}" Margin="80,149,451,439" FontSize="20" SelectedIndex="0" Background="#9aa7c1" Height="35">
                 <ComboBox.Resources>
@@ -45,9 +45,10 @@
                 <ComboBoxItem Content="Interest" />
                 <ComboBoxItem Content="Investment" />
                 <ComboBoxItem Content="Rental" />
+                <ComboBoxItem Content="Other" />
             </ComboBox>
             <Label Content="Date" Foreground="White" FontSize="25" Margin="431,103,100,481" />
-            <DatePicker Text="19.03.2023" Margin="431,149,100,439" FontSize="25" BorderThickness="0" Background="#9aa7c1" Height="35">
+            <DatePicker Text="21.03.2023" Margin="431,149,100,439" FontSize="25" BorderThickness="0" Background="#9aa7c1" Height="35">
                 <DatePicker.Style>
                     <Style TargetType="{x:Type DatePicker}">
                         <Style.Resources>
@@ -63,23 +64,51 @@
                 </DatePicker.Style>
             </DatePicker>
             <StackPanel Margin="80,211,269,189" Orientation="Horizontal">
-                <CheckBox x:Name="SavingsCheckBox" Content="Allocate to savings" Foreground="White" FontSize="19" Checked="SavingsCheckBox_Checked" Unchecked="SavingsCheckBox_Unchecked" Height="239" Width="647" Background="#9aa7c1"/>
+                <CheckBox x:Name="SavingsCheckBox" Content="Allocate to savings" FontSize="19" Checked="SavingsCheckBox_Checked" Unchecked="SavingsCheckBox_Unchecked" Height="239" Width="188" Background="#9aa7c1">
+                    <CheckBox.Style>
+                        <Style TargetType="{x:Type CheckBox}">
+                            <Setter Property="Foreground" Value="White"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Foreground" Value="#00cd00" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </CheckBox.Style>
+                </CheckBox>
             </StackPanel>
-            <TextBox Text="0" PreviewKeyDown="TextBox_PreviewKeyDown" x:Name="SavingsPercentageComboBox" Margin="168,211,411,0" VerticalAlignment="Top" HorizontalAlignment="Center" Height="29" FontSize="19" Background="#9aa7c1" Visibility="Hidden" />
+            <TextBox Text="0" PreviewKeyDown="AmountIncome_PreviewKeyDown" x:Name="SavingsPercentageComboBox" Margin="168,211,411,0" VerticalAlignment="Top" HorizontalAlignment="Center" Height="29" FontSize="19" Background="#9aa7c1" Visibility="Hidden" />
             <Label x:Name="SavingsPercentageLabel" Content="%" Foreground="White" FontSize="29" Margin="309,200,375,200" Visibility="Hidden" />
-            <Button Style="{StaticResource NoChromeButtonStyle}" Content="Save" Height="40" Foreground="Black" Background="#ccd3e0" FontSize="25" Margin="498,211,167,379" />
-            <Label Content="Income Table" Foreground="White" FontSize="25" Margin="80,280,434,305" />
+            <Button Style="{StaticResource NoChromeButtonStyle}" Content="Save" Height="40" Foreground="Black" Background="#ccd3e0" FontSize="25" Margin="498,211,167,379" >
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="10"></Setter>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            <Label Content="Income Table" Foreground="White" FontSize="25" Margin="67,280,447,305" />
             <Label Content="Filter" Foreground="White" FontSize="20" Margin="519,280,229,315" />
             <ComboBox Style="{DynamicResource ComboBoxStyle2}" Margin="591,280,100,315" FontSize="20" SelectedIndex="0" Background="#9aa7c1">
                 <ComboBox.Resources>
-                    <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}" Color="#9aa7c1"></SolidColorBrush>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}" Color="#9aa7c1"/>
                 </ComboBox.Resources>
                 <ComboBoxItem Content="Salary" />
                 <ComboBoxItem Content="Interest" />
                 <ComboBoxItem Content="Investment" />
                 <ComboBoxItem Content="Rental" />
+                <ComboBoxItem Content= "Other" />
             </ComboBox>
-            <DataGrid Margin="80,326,80,60" FontSize="20" Background="#6E7E91" GridLinesVisibility="All" x:Name="IncomeTable" AutoGenerateColumns="False" IsReadOnly="True">
+            <DataGrid Margin="67,330,93,56" FontSize="20" Background="#6E7E91" GridLinesVisibility="All" x:Name="IncomeTable" AutoGenerateColumns="False" IsReadOnly="True">
+                <DataGrid.Style>
+                    <Style TargetType="DataGrid">
+                        <Setter Property="Foreground" Value="Black"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="#1E2D56"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.Style>
                 <DataGrid.Resources>
                     <Style TargetType="DataGridColumnHeader">
                         <Setter Property="Background" Value="#D9D9D9"/>
@@ -89,13 +118,38 @@
                     </Style>
                 </DataGrid.Resources>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
-                    <DataGridTextColumn Header="Amount" Binding="{Binding Amount}" />
-                    <DataGridTextColumn Header="Category" Binding="{Binding Category}" />
-                    <DataGridTextColumn Header="Date" Binding="{Binding Date}" />
-                    <DataGridTextColumn Header="Savings" Binding="{Binding Savings}" />
+                    <DataGridTextColumn Header="Name" Binding="{Binding IncomeName}"/>
+                    <DataGridTextColumn Header="Amount" Binding="{Binding IncomeAmount}" />
+                    <DataGridTextColumn Header="Category" Binding="{Binding IncomeCategory}" />
+                    <DataGridTextColumn Header="Date" Binding="{Binding IncomeDate}" />
+                    <DataGridTextColumn Header="Savings (%)" Binding="{Binding IncomeSavings}" />
                 </DataGrid.Columns>
             </DataGrid>
+            <Button Content="Edit" Height="40" Foreground="Black" Background="#ccd3e0" FontSize="25" Margin="735,330,10,260">
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="DarkGoldenrod"/>
+                                <Setter Property="Foreground" Value="Green"/>
+                                <Setter Property="Margin" Value="10,20,0,0"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="10"></Setter>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            <Button Content="Delete" Height="40" Foreground="Black" Background="#ccd3e0" FontSize="25" Margin="735,390,10,200" >
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="10"></Setter>
+                    </Style>
+                </Button.Resources>
+            </Button>
         </Grid>
     </Grid>
 </Page>
