@@ -87,27 +87,15 @@
                 </Button.Resources>
             </Button>
             <Label Content="Income Table" Foreground="White" FontSize="25" Margin="169,280,451,305" />
-            <!--<Label Content="Filter" Foreground="White" FontSize="20" Margin="519,280,229,315" />
-            <ComboBox Style="{DynamicResource ComboBoxStyle2}" Margin="591,280,100,315" FontSize="20" Background="#9aa7c1" SelectionChanged="CategoryIncomeFilter_SelectionChanged" x:Name="CategoryIncomeFilter_ComboBox">
-                <ComboBox.Resources>
-                    <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}" Color="#9aa7c1"/>
-                </ComboBox.Resources>
-                <ComboBoxItem Content="All" />
-                <ComboBoxItem Content="Salary" />
-                <ComboBoxItem Content="Interest" />
-                <ComboBoxItem Content="Investment" />
-                <ComboBoxItem Content="Rental" />
-                <ComboBoxItem Content="Other" />
-            </ComboBox>-->
             <TextBox x:Name="FilterTextBox" FontSize="20" VerticalAlignment="Top" Margin="511,283,199,0" Background="#9aa7c1"/>
-            <Button Style="{StaticResource NoChromeButtonStyle}" Content="Filter" FontSize="20" Margin="629,283,127,318" Background="#ccd3e0">
+            <Button Style="{StaticResource NoChromeButtonStyle}" Content="Filter" FontSize="20" Click="FilterButton_Click" Margin="629,283,127,318" Background="#ccd3e0">
                 <Button.Resources>
                     <Style TargetType="Border">
                         <Setter Property="CornerRadius" Value="10"></Setter>
                     </Style>
                 </Button.Resources>
             </Button>
-            <Button Style="{StaticResource NoChromeButtonStyle}" Content="Reset" FontSize="20" Margin="698,283,58,318" Background="#ccd3e0" x:Name="ResetButton" Visibility="Hidden">
+            <Button Style="{StaticResource NoChromeButtonStyle}" Content="Reset" FontSize="20" Click="ResetButton_Click" Margin="698,283,58,318" Background="#ccd3e0" x:Name="ResetButton" Visibility="Hidden">
                 <Button.Resources>
                     <Style TargetType="Border">
                         <Setter Property="CornerRadius" Value="10"></Setter>
@@ -141,7 +129,7 @@
                     <DataGridTextColumn Header="Savings (%)" Binding="{Binding IncomeSavings}" />
                 </DataGrid.Columns>
             </DataGrid>
-            <Button Style="{StaticResource NoChromeButtonStyle}" Content="Delete" Height="40" Foreground="Black" Background="#ccd3e0" FontSize="25" Margin="688,520,58,70">
+            <Button Style="{StaticResource NoChromeButtonStyle}" Content="Delete" Height="40" Foreground="Black" Background="#ccd3e0" FontSize="25" Margin="688,520,58,70" Click="DeleteSelectedRow_Click">
                 <Button.Resources>
                     <Style TargetType="Border">
                         <Setter Property="CornerRadius" Value="10"></Setter>

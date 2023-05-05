@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -112,6 +113,34 @@ namespace ProjectWPF.Pages
             ExpensesAmountTextBox.Text = "";
             ExpensesCategoryComboBox.SelectedIndex = 0;
             ExpensesDatePicker.SelectedDate = DateTime.Now.Date;
+        }
+        private void FilterExpensesButton_Click(object sender, RoutedEventArgs e)
+        {
+            ICollectionView view = CollectionViewSource.GetDefaultView(ExpensesTable.ItemsSource);
+            view.Filter = item =>
+            {
+                ResetExpensesButton.Visibility = Visibility.Visible;
+                if (FilterExpensesTextBox.Text == "") return true;
+                Expenses expenses = item as Expenses;
+                return expenses.CategoryExpense.ToLower().Contains(FilterExpensesTextBox.Text.ToLower());
+            };
+        }
+        private void ResetExpensesButton_Click(object sender, RoutedEventArgs e)
+        {
+            ICollectionView view = CollectionViewSource.GetDefaultView(ExpensesTable.ItemsSource);
+            view.Filter = null;
+            ResetExpensesButton.Visibility = Visibility.Hidden;
+        }
+        private void DeleteSelectedExpensesRow_Click(object sender, RoutedEventArgs e)
+        {
+            Expenses selectedIncome = ExpensesTable.SelectedItem as Expenses;
+            if (selectedIncome != null)
+            {
+                int index = ExpensesList.IndexOf(selectedIncome);
+                ExpensesList.RemoveAt(index);
+                ICollectionView view = CollectionViewSource.GetDefaultView(ExpensesTable.ItemsSource);
+                view.Refresh();
+            }
         }
     }
 }

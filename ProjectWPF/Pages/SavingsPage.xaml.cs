@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -71,5 +72,16 @@ namespace ProjectWPF.Pages
             new Savings() { AmountSavings = "800", CategorySavings = "Rental", SourceSavings = "Flat", DateSavings = new DateOnly(2023, 3, 15) },
             new Savings() { AmountSavings = "160", CategorySavings = "Other", SourceSavings = "Gift", DateSavings = new DateOnly(2023, 3, 17) },
         };
+        private void DeleteSelectedSavingsRow_Click(object sender, RoutedEventArgs e)
+        {
+            Savings selectedIncome = SavingsTable.SelectedItem as Savings;
+            if (selectedIncome != null)
+            {
+                int index = SavingsList.IndexOf(selectedIncome);
+                SavingsList.RemoveAt(index);
+                ICollectionView view = CollectionViewSource.GetDefaultView(SavingsTable.ItemsSource);
+                view.Refresh();
+            }
+        }
     }
 }

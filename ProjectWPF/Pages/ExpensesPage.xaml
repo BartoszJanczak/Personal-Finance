@@ -71,14 +71,14 @@
             </Button>
             <Label Content="Expenses Table" Foreground="White" FontSize="25" Margin="170,279,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
             <TextBox x:Name="FilterExpensesTextBox" FontSize="20" VerticalAlignment="Top" Margin="511,283,199,0" Background="#9aa7c1"/>
-            <Button Style="{StaticResource NoChromeButtonStyle}" Content="Filter" FontSize="20" Margin="629,283,127,318" Background="#ccd3e0">
+            <Button Style="{StaticResource NoChromeButtonStyle}" Content="Filter" FontSize="20" Click="FilterExpensesButton_Click" Margin="629,283,127,318" Background="#ccd3e0">
                 <Button.Resources>
                     <Style TargetType="Border">
                         <Setter Property="CornerRadius" Value="10"></Setter>
                     </Style>
                 </Button.Resources>
             </Button>
-            <Button Style="{StaticResource NoChromeButtonStyle}" Content="Reset" FontSize="20" Margin="698,283,58,318" Background="#ccd3e0" x:Name="ResetExpensesButton" Visibility="Hidden">
+            <Button Style="{StaticResource NoChromeButtonStyle}" Content="Reset" FontSize="20" Click="ResetExpensesButton_Click" Margin="698,283,58,318" Background="#ccd3e0" x:Name="ResetExpensesButton" Visibility="Hidden">
                 <Button.Resources>
                     <Style TargetType="Border">
                         <Setter Property="CornerRadius" Value="10"></Setter>
@@ -101,7 +101,7 @@
                     <DataGridTextColumn Header="Date" Binding="{Binding DateExpense}" />
                 </DataGrid.Columns>
             </DataGrid>
-            <Button Style="{StaticResource NoChromeButtonStyle}" Content="Delete" Height="40" Foreground="Black" Background="#ccd3e0" FontSize="25" Margin="688,520,58,70">
+            <Button Style="{StaticResource NoChromeButtonStyle}" Content="Delete" Height="40" Foreground="Black" Background="#ccd3e0" FontSize="25" Margin="688,520,58,70" Click="DeleteSelectedExpensesRow_Click">
                 <Button.Resources>
                     <Style TargetType="Border">
                         <Setter Property="CornerRadius" Value="10"></Setter>

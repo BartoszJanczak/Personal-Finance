@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -140,6 +141,34 @@ namespace ProjectWPF.Pages
             SavingsCheckBox.IsChecked = false;
 
             SavingsPage savingsPage = new SavingsPage(incomeAmount, incomeCategory, incomeName, incomeDate, incomeSavings);
+        }
+        private void FilterButton_Click(object sender, RoutedEventArgs e)
+        {
+            ICollectionView view = CollectionViewSource.GetDefaultView(IncomeTable.ItemsSource);
+            view.Filter = item =>
+            {
+                ResetButton.Visibility = Visibility.Visible;
+                if (FilterTextBox.Text == "") return true;
+                Income income = item as Income;
+                return income.IncomeCategory.ToLower().Contains(FilterTextBox.Text.ToLower());
+            };
+        }
+        private void ResetButton_Click(object sender, RoutedEventArgs e)
+        {
+            ICollectionView view = CollectionViewSource.GetDefaultView(IncomeTable.ItemsSource);
+            view.Filter = null;
+            ResetButton.Visibility = Visibility.Hidden;
+        }
+        private void DeleteSelectedRow_Click(object sender, RoutedEventArgs e)
+        {
+            Income selectedIncome = IncomeTable.SelectedItem as Income;
+            if (selectedIncome != null)
+            {
+                int index = IncomeList.IndexOf(selectedIncome);
+                IncomeList.RemoveAt(index);
+                ICollectionView view = CollectionViewSource.GetDefaultView(IncomeTable.ItemsSource);
+                view.Refresh();
+            }
         }
     }
 }
