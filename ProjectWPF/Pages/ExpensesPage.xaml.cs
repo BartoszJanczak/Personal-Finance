@@ -24,6 +24,7 @@ namespace ProjectWPF.Pages
         {
             InitializeComponent();
             ExpensesTable.ItemsSource = ExpensesList;
+            ExpensesDatePicker.SelectedDate = DateTime.Now.Date;
         }
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
@@ -65,5 +66,52 @@ namespace ProjectWPF.Pages
             new Expenses() { NameExpense = "Party", AmountExpense = 100, CategoryExpense = "Entertainment", DateExpense = new DateOnly(2023, 3, 20) },
 
         };
+        private void SaveExpenses_Click(object sender, RoutedEventArgs e)
+        {
+            string expensesName = ExpensesNameTextBox.Text;
+            int expensesAmount = 0;
+            bool isExpensesAmountValid = int.TryParse(ExpensesAmountTextBox.Text, out expensesAmount);
+            string expensesCategory = ExpensesCategoryComboBox.Text;
+            DateOnly expensesDate = new DateOnly(ExpensesDatePicker.SelectedDate.Value.Year, ExpensesDatePicker.SelectedDate.Value.Month, ExpensesDatePicker.SelectedDate.Value.Day);
+
+            if (string.IsNullOrWhiteSpace(expensesName) && !isExpensesAmountValid)
+            {
+                ExpensesNameTextBox.BorderBrush = Brushes.Red;
+                ExpensesAmountTextBox.BorderBrush = Brushes.Red;
+                MessageBox.Show("Please enter a valid Expense name and Amount.");
+                return;
+            }
+            else if (string.IsNullOrWhiteSpace(expensesName))
+            {
+                ExpensesNameTextBox.BorderBrush = Brushes.Red;
+                MessageBox.Show("Please enter a valid Expense name.");
+                return;
+            }
+            else if (!isExpensesAmountValid)
+            {
+                ExpensesAmountTextBox.BorderBrush = Brushes.Red;
+                MessageBox.Show("Please enter a valid Amount.");
+                return;
+            }
+            Expenses newExpenses = new Expenses()
+            {
+                NameExpense = expensesName,
+                AmountExpense = expensesAmount,
+                CategoryExpense = expensesCategory,
+                DateExpense = expensesDate,
+            };
+
+            ExpensesList.Add(newExpenses);
+
+            ExpensesTable.ItemsSource = null;
+            ExpensesTable.ItemsSource = ExpensesList;
+
+            ExpensesNameTextBox.BorderBrush = Brushes.Gray;
+            ExpensesAmountTextBox.BorderBrush = Brushes.Gray;
+            ExpensesNameTextBox.Text = "";
+            ExpensesAmountTextBox.Text = "";
+            ExpensesCategoryComboBox.SelectedIndex = 0;
+            ExpensesDatePicker.SelectedDate = DateTime.Now.Date;
+        }
     }
 }

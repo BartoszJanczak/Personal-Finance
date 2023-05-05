@@ -32,11 +32,11 @@
         </Button>
         <Grid Grid.Row="1">
             <Label Content="Expense name" Foreground="White" FontSize="25" Margin="80,10,451,576" />
-            <TextBox Margin="80,54,451,532" FontSize="20" Foreground="Black" Background="#9aa7c1" Height="30"></TextBox>
+            <TextBox Margin="80,54,451,532" FontSize="20" Foreground="Black" Background="#9aa7c1" Height="30" x:Name="ExpensesNameTextBox"></TextBox>
             <Label Content="Amount" Foreground="White" FontSize="25" Margin="431,10,78,577" />
-            <TextBox Margin="431,53,100,532" FontSize="20" Foreground="Black" Background="#9aa7c1" Height="30" PreviewKeyDown="AmountExpenses_PreviewKeyDown"/>
+            <TextBox Margin="431,53,100,532" FontSize="20" Foreground="Black" Background="#9aa7c1" Height="30" PreviewKeyDown="AmountExpenses_PreviewKeyDown" x:Name="ExpensesAmountTextBox"/>
             <Label Content="Category" Foreground="White" FontSize="25" Margin="80,103,423,481" />
-            <ComboBox Style="{DynamicResource ComboBoxStyle2}" Margin="80,149,451,439" FontSize="20" SelectedIndex="0" Background="#9aa7c1" Height="35">
+            <ComboBox Style="{DynamicResource ComboBoxStyle2}" Margin="80,149,451,439" FontSize="20" SelectedIndex="0" Background="#9aa7c1" Height="35" x:Name="ExpensesCategoryComboBox">
                 <ComboBox.Resources>
                     <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}" Color="#9aa7c1"></SolidColorBrush>
                 </ComboBox.Resources>
@@ -47,7 +47,7 @@
                 <ComboBoxItem Content="Education" />
             </ComboBox>
             <Label Content="Date" Foreground="White" FontSize="25" Margin="431,103,100,481" />
-            <DatePicker Text="21.03.2023" Margin="431,149,100,439" FontSize="25" BorderThickness="0" Background="#9aa7c1" Height="35">
+            <DatePicker Margin="431,149,100,439" FontSize="25" BorderThickness="0" Background="#9aa7c1" Height="35" x:Name="ExpensesDatePicker">
                 <DatePicker.Style>
                     <Style TargetType="{x:Type DatePicker}">
                         <Style.Resources>
@@ -62,31 +62,35 @@
                     </Style>
                 </DatePicker.Style>
             </DatePicker>
-            <Button Style="{StaticResource NoChromeButtonStyle}" Content="Save" Height="40" Foreground="Black" Background="#ccd3e0" FontSize="25" Margin="332,210,332,380">
+            <Button Style="{StaticResource NoChromeButtonStyle}" Content="Save" Height="40" Foreground="Black" Background="#ccd3e0" FontSize="25" Margin="332,210,332,380" Click="SaveExpenses_Click">
                 <Button.Resources>
                     <Style TargetType="Border">
                         <Setter Property="CornerRadius" Value="10"></Setter>
                     </Style>
                 </Button.Resources>
             </Button>
-            <Label Content="Expenses Table" Foreground="White" FontSize="25" Margin="64,280,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
-            <Label Content="Filter" Foreground="White" FontSize="20" Margin="519,280,229,315" />
-            <ComboBox Style="{DynamicResource ComboBoxStyle2}" Margin="591,280,100,315" FontSize="20" SelectedIndex="0" Background="#9aa7c1">
-                <ComboBox.Resources>
-                    <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}" Color="#9aa7c1"></SolidColorBrush>
-                </ComboBox.Resources>
-                <ComboBoxItem Content="Food" />
-                <ComboBoxItem Content="Bills" />
-                <ComboBoxItem Content="Transport" />
-                <ComboBoxItem Content="Entertainment" />
-                <ComboBoxItem Content="Education" />
-            </ComboBox>
-            <DataGrid Margin="60,327,100,59" FontSize="20" Background="#6E7E91" GridLinesVisibility="All" x:Name="ExpensesTable" AutoGenerateColumns="False" IsReadOnly="True">
+            <Label Content="Expenses Table" Foreground="White" FontSize="25" Margin="170,279,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
+            <TextBox x:Name="FilterExpensesTextBox" FontSize="20" VerticalAlignment="Top" Margin="511,283,199,0" Background="#9aa7c1"/>
+            <Button Style="{StaticResource NoChromeButtonStyle}" Content="Filter" FontSize="20" Margin="629,283,127,318" Background="#ccd3e0">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="10"></Setter>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            <Button Style="{StaticResource NoChromeButtonStyle}" Content="Reset" FontSize="20" Margin="698,283,58,318" Background="#ccd3e0" x:Name="ResetExpensesButton" Visibility="Hidden">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="10"></Setter>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            <DataGrid Margin="60,327,100,59" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" Background="#6E7E91" GridLinesVisibility="All" x:Name="ExpensesTable" AutoGenerateColumns="False" IsReadOnly="True">
                 <DataGrid.Resources>
                     <Style TargetType="DataGridColumnHeader">
                         <Setter Property="Background" Value="#D9D9D9"/>
                         <Setter Property="Foreground" Value="Black"/>
-                        <Setter Property="Width" Value="163"/>
+                        <Setter Property="Width" Value="Auto"/>
                         <Setter Property="HorizontalContentAlignment" Value="Center" />
                     </Style>
                 </DataGrid.Resources>
@@ -97,14 +101,7 @@
                     <DataGridTextColumn Header="Date" Binding="{Binding DateExpense}" />
                 </DataGrid.Columns>
             </DataGrid>
-            <Button Content="Edit" Height="40" Foreground="Black" Background="#ccd3e0" FontSize="25" Margin="735,330,10,260" >
-                <Button.Resources>
-                    <Style TargetType="Border">
-                        <Setter Property="CornerRadius" Value="10"></Setter>
-                    </Style>
-                </Button.Resources>
-            </Button>
-            <Button Content="Delete" Height="40" Foreground="Black" Background="#ccd3e0" FontSize="25" Margin="735,390,10,200" >
+            <Button Style="{StaticResource NoChromeButtonStyle}" Content="Delete" Height="40" Foreground="Black" Background="#ccd3e0" FontSize="25" Margin="688,520,58,70">
                 <Button.Resources>
                     <Style TargetType="Border">
                         <Setter Property="CornerRadius" Value="10"></Setter>

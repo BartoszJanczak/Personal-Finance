@@ -25,6 +25,7 @@ namespace ProjectWPF.Pages
         {
             InitializeComponent();
             IncomeTable.ItemsSource = IncomeList;
+            IncomeDatePicker.SelectedDate = DateTime.Now.Date;
         }
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
@@ -61,9 +62,8 @@ namespace ProjectWPF.Pages
                     }
                 }
             }
-            else
+            else if (textBox == SavingsPercentageComboBox)
             {
-                // Sprawdzenie, czy wprowadzona wartość jest liczbą z zakresu 0-100
                 int value;
                 if (!int.TryParse(SavingsPercentageComboBox.Text + e.Key.ToString().Last(), out value) || value < 0 || value > 100)
                 {
@@ -87,5 +87,59 @@ namespace ProjectWPF.Pages
             new Income() { IncomeName = "Flat", IncomeAmount = 2000, IncomeCategory = "Rental", IncomeDate = new DateOnly(2023, 3, 15), IncomeSavings = 40 },
             new Income() { IncomeName = "Gift", IncomeAmount = 200, IncomeCategory = "Other", IncomeDate = new DateOnly(2023, 3, 17), IncomeSavings = 80 },
         };
+        private void SaveIncome_Click(object sender, RoutedEventArgs e)
+        {
+            string incomeName = IncomeNameTextBox.Text;
+            int incomeAmount = 0;
+            bool isIncomeAmountValid = int.TryParse(IncomeAmountTextBox.Text, out incomeAmount);
+            string incomeCategory = IncomeCategoryComboBox.Text;
+            DateOnly incomeDate = new DateOnly(IncomeDatePicker.SelectedDate.Value.Year, IncomeDatePicker.SelectedDate.Value.Month, IncomeDatePicker.SelectedDate.Value.Day);
+            int incomeSavings = SavingsCheckBox.IsChecked == true ? int.Parse(SavingsPercentageComboBox.Text) : 0;
+            
+            if (string.IsNullOrWhiteSpace(incomeName) && !isIncomeAmountValid)
+            {
+                IncomeNameTextBox.BorderBrush = Brushes.Red;
+                IncomeAmountTextBox.BorderBrush = Brushes.Red;
+                MessageBox.Show("Please enter a valid Income name and Amount.");
+                return;
+            }
+            else if (string.IsNullOrWhiteSpace(incomeName))
+            {
+                IncomeNameTextBox.BorderBrush = Brushes.Red;
+                IncomeAmountTextBox.BorderBrush = Brushes.Gray;
+                MessageBox.Show("Please enter a valid Income name.");
+                return;
+            }
+            else if (!isIncomeAmountValid)
+            {
+                IncomeAmountTextBox.BorderBrush = Brushes.Red;
+                IncomeNameTextBox.BorderBrush = Brushes.Gray;
+                MessageBox.Show("Please enter a valid Amount.");
+                return;
+            }
+            Income newIncome = new Income()
+            {
+                IncomeName = incomeName,
+                IncomeAmount = incomeAmount,
+                IncomeCategory = incomeCategory,
+                IncomeDate = incomeDate,
+                IncomeSavings = incomeSavings
+            };
+
+            IncomeList.Add(newIncome);
+
+            IncomeTable.ItemsSource = null;
+            IncomeTable.ItemsSource = IncomeList;
+
+            IncomeNameTextBox.BorderBrush = Brushes.Gray;
+            IncomeAmountTextBox.BorderBrush = Brushes.Gray;
+            IncomeNameTextBox.Text = "";
+            IncomeAmountTextBox.Text = "";
+            IncomeCategoryComboBox.SelectedIndex = 0;
+            IncomeDatePicker.SelectedDate = DateTime.Now.Date;
+            SavingsCheckBox.IsChecked = false;
+
+            SavingsPage savingsPage = new SavingsPage(incomeAmount, incomeCategory, incomeName, incomeDate, incomeSavings);
+        }
     }
 }

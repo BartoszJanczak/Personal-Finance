@@ -20,9 +20,30 @@ namespace ProjectWPF.Pages
     /// </summary>
     public partial class SavingsPage : Page
     {
-        public SavingsPage()
+        public SavingsPage() : this(0, "", "", new DateOnly(), 0) { }
+
+        private string incomeName;
+        private int incomeAmount;
+        private string incomeCategory;
+        private DateOnly incomeDate;
+        private int incomeSavings;
+        public SavingsPage(int incomeAmount, string incomeCategory, string incomeName, DateOnly incomeDate, int incomeSavings)
         {
             InitializeComponent();
+
+            this.incomeAmount = incomeAmount;
+            this.incomeCategory = incomeCategory;
+            this.incomeName = incomeName;
+            this.incomeDate = incomeDate;
+            this.incomeSavings = incomeSavings;
+
+            double savingsPercentage = double.Parse(incomeSavings.ToString());
+            double savingsMultiplier = savingsPercentage / 100.0;
+            double savingsAmount = incomeAmount * savingsMultiplier;
+            if (savingsAmount > 0)
+            {
+                SavingsList.Add(new Savings() { AmountSavings = savingsAmount.ToString("N2"), CategorySavings = incomeCategory, SourceSavings = incomeName, DateSavings = incomeDate });
+            }
             SavingsTable.ItemsSource = SavingsList;
         }
         private void CloseButton_Click(object sender, RoutedEventArgs e)
