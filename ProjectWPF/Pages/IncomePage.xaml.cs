@@ -135,16 +135,64 @@ namespace ProjectWPF.Pages
                 MessageBox.Show("Please enter a valid Amount.");
                 return;
             }
-            Income newIncome = new Income()
-            {
-                IncomeName = incomeName,
-                IncomeAmount = incomeAmount,
-                IncomeCategory = incomeCategory,
-                IncomeDate = incomeDate,
-                IncomeSavings = incomeSavings
-            };
 
-            IncomeList.Add(newIncome);
+            SQLiteConnection connection = new SQLiteConnection("Data Source=financeDB.sqlite3");
+            connection.Open();
+            double savingsPercentage = double.Parse(incomeSavings.ToString());
+            double savingsMultiplier = savingsPercentage / 100.0;
+            double savingsAmount = incomeAmount * savingsMultiplier;
+            string query = "INSERT INTO Income (IncomeName, IncomeAmount, IncomeCategory, IncomeDate, IncomeSavings) VALUES (@IncomeName, @IncomeAmount, @IncomeCategory, @IncomeDate, @IncomeSavings);";
+
+            SQLiteCommand command = new SQLiteCommand(query, connection);
+            command.Parameters.AddWithValue("@IncomeName", incomeName);
+            command.Parameters.AddWithValue("@IncomeAmount", incomeAmount);
+            command.Parameters.AddWithValue("@IncomeCategory", incomeCategory);
+            command.Parameters.AddWithValue("@IncomeDate", incomeDate.ToString("yyyy-MM-dd"));
+            command.Parameters.AddWithValue("@IncomeSavings", incomeSavings);
+
+            command.ExecuteNonQuery();
+            if (savingsAmount > 0)
+            {
+                string query2 = "INSERT INTO Savings (SavingsAmount, SavingsCategory, SavingsSource, SavingsDate) VALUES (@SavingsAmount, @SavingsCategory, @SavingsSource, @SavingsDate);";
+
+                SQLiteCommand command2 = new SQLiteCommand(query2, connection);
+                command2.Parameters.AddWithValue("@SavingsAmount", savingsAmount);
+                command2.Parameters.AddWithValue("@SavingsCategory", incomeCategory);
+                command2.Parameters.AddWithValue("@SavingsSource", incomeName);
+                command2.Parameters.AddWithValue("@SavingsDate", incomeDate.ToString("yyyy-MM-dd"));
+
+                command2.ExecuteNonQuery();
+            }
+            connection.Close();
+
+            RefreshIncomeTable();
+        }
+        private void RefreshIncomeTable()
+        {
+            IncomeList.Clear();
+            SQLiteConnection connection = new SQLiteConnection("Data Source=financeDB.sqlite3");
+            connection.Open();
+
+            string query = "SELECT * FROM Income;";
+            SQLiteCommand command = new SQLiteCommand(query, connection);
+
+            SQLiteDataReader reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                Income income = new Income()
+                {
+                    IncomeName = reader.GetString(1),
+                    IncomeAmount = reader.GetInt32(2),
+                    IncomeCategory = reader.GetString(3),
+                    IncomeDate = DateOnly.Parse(reader.GetString(4)),
+                    IncomeSavings = reader.GetInt32(5)
+                };
+
+                IncomeList.Add(income);
+            }
+
+            connection.Close();
 
             IncomeTable.ItemsSource = null;
             IncomeTable.ItemsSource = IncomeList;
@@ -155,6 +203,7 @@ namespace ProjectWPF.Pages
             IncomeAmountTextBox.Text = "";
             IncomeCategoryComboBox.SelectedIndex = 0;
             IncomeDatePicker.SelectedDate = DateTime.Now.Date;
+            SavingsPercentageComboBox.Text = "0";
             SavingsCheckBox.IsChecked = false;
         }
         private void FilterButton_Click(object sender, RoutedEventArgs e)
