@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,31 +22,33 @@ namespace ProjectWPF.Pages
     /// </summary>
     public partial class SavingsPage : Page
     {
-        public SavingsPage() : this(0, "", "", new DateOnly(), 0) { }
-
-        private string incomeName;
-        private int incomeAmount;
-        private string incomeCategory;
-        private DateOnly incomeDate;
-        private int incomeSavings;
-        public SavingsPage(int incomeAmount, string incomeCategory, string incomeName, DateOnly incomeDate, int incomeSavings)
+        public SavingsPage()
         {
             InitializeComponent();
 
-            this.incomeAmount = incomeAmount;
-            this.incomeCategory = incomeCategory;
-            this.incomeName = incomeName;
-            this.incomeDate = incomeDate;
-            this.incomeSavings = incomeSavings;
+            SQLiteConnection connection = new SQLiteConnection("Data Source=financeDB.sqlite3");
+            connection.Open();
 
-            double savingsPercentage = double.Parse(incomeSavings.ToString());
-            double savingsMultiplier = savingsPercentage / 100.0;
-            double savingsAmount = incomeAmount * savingsMultiplier;
-            if (savingsAmount > 0)
+            // pobranie danych z bazy danych i dodanie ich do listy
+            string selectDataSQL = "SELECT * FROM Savings";
+            SQLiteCommand selectDataCommand = new SQLiteCommand(selectDataSQL, connection);
+            SQLiteDataReader dataReader = selectDataCommand.ExecuteReader();
+            SavingsList = new List<Savings>();
+            while (dataReader.Read())
             {
-                SavingsList.Add(new Savings() { AmountSavings = savingsAmount.ToString("N2"), CategorySavings = incomeCategory, SourceSavings = incomeName, DateSavings = incomeDate });
+                Savings savings = new Savings()
+                {
+                    AmountSavings = double.Parse(dataReader["SavingsAmount"].ToString()),
+                    CategorySavings = dataReader["SavingsCategory"].ToString(),
+                    SourceSavings = dataReader["SavingsSource"].ToString(),
+                    DateSavings = DateOnly.Parse(dataReader["SavingsDate"].ToString()),
+                };
+                SavingsList.Add(savings);
             }
+            dataReader.Close();
             SavingsTable.ItemsSource = SavingsList;
+            double totalSavings = SavingsList.Sum(s => s.AmountSavings);
+            connection.Close();
         }
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
@@ -59,18 +62,14 @@ namespace ProjectWPF.Pages
         }
         public class Savings
         {
-            public string AmountSavings { get; set; }
+            public double AmountSavings { get; set; }
             public string CategorySavings { get; set; }
             public string SourceSavings { get; set; }
             public DateOnly DateSavings { get; set; }
         }
         List<Savings> SavingsList = new List<Savings>()
         {
-            new Savings() { AmountSavings = "380", CategorySavings = "Salary", SourceSavings = "Work", DateSavings = new DateOnly(2021, 2, 1) },
-            new Savings() { AmountSavings = "400", CategorySavings = "Salary", SourceSavings = "Work", DateSavings = new DateOnly(2023, 3, 1) },
-            new Savings() { AmountSavings = "500", CategorySavings = "Investment", SourceSavings = "Bitcoin", DateSavings = new DateOnly(2023, 3, 12) },
-            new Savings() { AmountSavings = "800", CategorySavings = "Rental", SourceSavings = "Flat", DateSavings = new DateOnly(2023, 3, 15) },
-            new Savings() { AmountSavings = "160", CategorySavings = "Other", SourceSavings = "Gift", DateSavings = new DateOnly(2023, 3, 17) },
+            
         };
         private void DeleteSelectedSavingsRow_Click(object sender, RoutedEventArgs e)
         {

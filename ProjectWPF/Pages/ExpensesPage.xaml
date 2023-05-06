@@ -95,10 +95,10 @@
                     </Style>
                 </DataGrid.Resources>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Name" Binding="{Binding NameExpense}" />
-                    <DataGridTextColumn Header="Amount" Binding="{Binding AmountExpense}" />
-                    <DataGridTextColumn Header="Category" Binding="{Binding CategoryExpense}" />
-                    <DataGridTextColumn Header="Date" Binding="{Binding DateExpense}" />
+                    <DataGridTextColumn Header="Name" Binding="{Binding ExpenseName}" />
+                    <DataGridTextColumn Header="Amount" Binding="{Binding ExpenseAmount}" />
+                    <DataGridTextColumn Header="Category" Binding="{Binding ExpenseCategory}" />
+                    <DataGridTextColumn Header="Date" Binding="{Binding ExpenseDate}" />
                 </DataGrid.Columns>
             </DataGrid>
             <Button Style="{StaticResource NoChromeButtonStyle}" Content="Delete" Height="40" Foreground="Black" Background="#ccd3e0" FontSize="25" Margin="688,520,58,70" Click="DeleteSelectedExpensesRow_Click">

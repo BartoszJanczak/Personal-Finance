@@ -53,7 +53,7 @@
             <Label Content="Estimated savings" Foreground="White" FontSize="30" Margin="0,137,0,362" HorizontalAlignment="Center"/>
             <Label Content="0 $" Margin="274,190,274,390" Foreground="White" FontSize="30" Background="Green" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             <Label Content="Savings table" Foreground="White" FontSize="30" Margin="0,258,0,320" HorizontalAlignment="Center"/>
-            <Button Style="{StaticResource NoChromeButtonStyle}" Content="Delete" Height="40" Foreground="Black" Background="#ccd3e0" FontSize="25" Margin="606,451,140,139" Click="DeleteSelectedSavingsRow_Click">
+            <Button Style="{StaticResource NoChromeButtonStyle}" Content="Delete" Height="40" Foreground="Black" Background="#ccd3e0" FontSize="25" Margin="688,520,58,70" Click="DeleteSelectedSavingsRow_Click">
                 <Button.Resources>
                     <Style TargetType="Border">
                         <Setter Property="CornerRadius" Value="10"></Setter>

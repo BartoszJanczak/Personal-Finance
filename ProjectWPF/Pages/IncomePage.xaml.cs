@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,6 +26,26 @@ namespace ProjectWPF.Pages
         public IncomePage()
         {
             InitializeComponent();
+            SQLiteConnection connection = new SQLiteConnection("Data Source=financeDB.sqlite3");
+            connection.Open();
+
+            string selectDataSQL = "SELECT * FROM Income";
+            SQLiteCommand selectDataCommand = new SQLiteCommand(selectDataSQL, connection);
+            SQLiteDataReader dataReader = selectDataCommand.ExecuteReader();
+            IncomeList = new List<Income>();
+            while (dataReader.Read())
+            {
+                Income income = new Income()
+                {
+                    IncomeName = dataReader["IncomeName"].ToString(),
+                    IncomeAmount = int.Parse(dataReader["IncomeAmount"].ToString()),
+                    IncomeCategory = dataReader["IncomeCategory"].ToString(),
+                    IncomeDate = DateOnly.Parse(dataReader["IncomeDate"].ToString()),
+                    IncomeSavings = int.Parse(dataReader["IncomeSavings"].ToString())
+                };
+                IncomeList.Add(income);
+            }
+            dataReader.Close();
             IncomeTable.ItemsSource = IncomeList;
             IncomeDatePicker.SelectedDate = DateTime.Now.Date;
         }
@@ -82,11 +103,7 @@ namespace ProjectWPF.Pages
         }
         List<Income> IncomeList = new List<Income>()
         {
-            new Income() { IncomeName = "Work", IncomeAmount = 3800, IncomeCategory = "Salary", IncomeDate = new DateOnly(2023, 2, 1), IncomeSavings = 10 },
-            new Income() { IncomeName = "Work", IncomeAmount = 4000, IncomeCategory = "Salary", IncomeDate = new DateOnly(2023, 3, 1), IncomeSavings = 10 },
-            new Income() { IncomeName = "Bitcoin", IncomeAmount = 1000, IncomeCategory = "Investment", IncomeDate = new DateOnly(2023, 3, 12), IncomeSavings = 50 },
-            new Income() { IncomeName = "Flat", IncomeAmount = 2000, IncomeCategory = "Rental", IncomeDate = new DateOnly(2023, 3, 15), IncomeSavings = 40 },
-            new Income() { IncomeName = "Gift", IncomeAmount = 200, IncomeCategory = "Other", IncomeDate = new DateOnly(2023, 3, 17), IncomeSavings = 80 },
+            
         };
         private void SaveIncome_Click(object sender, RoutedEventArgs e)
         {
@@ -139,8 +156,6 @@ namespace ProjectWPF.Pages
             IncomeCategoryComboBox.SelectedIndex = 0;
             IncomeDatePicker.SelectedDate = DateTime.Now.Date;
             SavingsCheckBox.IsChecked = false;
-
-            SavingsPage savingsPage = new SavingsPage(incomeAmount, incomeCategory, incomeName, incomeDate, incomeSavings);
         }
         private void FilterButton_Click(object sender, RoutedEventArgs e)
         {

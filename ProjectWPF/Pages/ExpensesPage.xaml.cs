@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +25,27 @@ namespace ProjectWPF.Pages
         public ExpensesPage()
         {
             InitializeComponent();
+            // nawiązanie połączenia z bazą danych
+            SQLiteConnection connection = new SQLiteConnection("Data Source=financeDB.sqlite3");
+            connection.Open();
+
+            // pobranie danych z bazy danych i dodanie ich do listy
+            string selectDataSQL = "SELECT * FROM Expenses";
+            SQLiteCommand selectDataCommand = new SQLiteCommand(selectDataSQL, connection);
+            SQLiteDataReader dataReader = selectDataCommand.ExecuteReader();
+            ExpensesList = new List<Expenses>();
+            while (dataReader.Read())
+            {
+                Expenses expenses = new Expenses()
+                {
+                    ExpenseName = dataReader["ExpenseName"].ToString(),
+                    ExpenseAmount = int.Parse(dataReader["ExpenseAmount"].ToString()),
+                    ExpenseCategory = dataReader["ExpenseCategory"].ToString(),
+                    ExpenseDate = DateOnly.Parse(dataReader["ExpenseDate"].ToString()),
+                };
+                ExpensesList.Add(expenses);
+            }
+            dataReader.Close();
             ExpensesTable.ItemsSource = ExpensesList;
             ExpensesDatePicker.SelectedDate = DateTime.Now.Date;
         }
@@ -53,18 +75,13 @@ namespace ProjectWPF.Pages
         }
         public class Expenses
         {
-            public string NameExpense { get; set; }
-            public int AmountExpense { get; set; }
-            public string CategoryExpense { get; set; }
-            public DateOnly DateExpense { get; set; }
+            public string ExpenseName { get; set; }
+            public int ExpenseAmount { get; set; }
+            public string ExpenseCategory { get; set; }
+            public DateOnly ExpenseDate { get; set; }
         }
         List<Expenses> ExpensesList = new List<Expenses>()
         {
-            new Expenses() { NameExpense = "Restaurant", AmountExpense = 200, CategoryExpense = "Food", DateExpense = new DateOnly(2023, 3, 11) },
-            new Expenses() { NameExpense = "McDonald's", AmountExpense = 40, CategoryExpense = "Food", DateExpense = new DateOnly(2023, 3, 15) },
-            new Expenses() { NameExpense = "Electricity", AmountExpense = 200, CategoryExpense = "Bills", DateExpense = new DateOnly(2023, 3, 17) },
-            new Expenses() { NameExpense = "Fuel", AmountExpense = 180, CategoryExpense = "Transport", DateExpense = new DateOnly(2023, 3, 18) },
-            new Expenses() { NameExpense = "Party", AmountExpense = 100, CategoryExpense = "Entertainment", DateExpense = new DateOnly(2023, 3, 20) },
 
         };
         private void SaveExpenses_Click(object sender, RoutedEventArgs e)
@@ -96,10 +113,10 @@ namespace ProjectWPF.Pages
             }
             Expenses newExpenses = new Expenses()
             {
-                NameExpense = expensesName,
-                AmountExpense = expensesAmount,
-                CategoryExpense = expensesCategory,
-                DateExpense = expensesDate,
+                ExpenseName = expensesName,
+                ExpenseAmount = expensesAmount,
+                ExpenseCategory = expensesCategory,
+                ExpenseDate = expensesDate,
             };
 
             ExpensesList.Add(newExpenses);
@@ -122,7 +139,7 @@ namespace ProjectWPF.Pages
                 ResetExpensesButton.Visibility = Visibility.Visible;
                 if (FilterExpensesTextBox.Text == "") return true;
                 Expenses expenses = item as Expenses;
-                return expenses.CategoryExpense.ToLower().Contains(FilterExpensesTextBox.Text.ToLower());
+                return expenses.ExpenseCategory.ToLower().Contains(FilterExpensesTextBox.Text.ToLower());
             };
         }
         private void ResetExpensesButton_Click(object sender, RoutedEventArgs e)
