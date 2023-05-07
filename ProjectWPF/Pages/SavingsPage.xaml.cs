@@ -48,6 +48,31 @@ namespace ProjectWPF.Pages
             dataReader.Close();
             SavingsTable.ItemsSource = SavingsList;
             double totalSavings = SavingsList.Sum(s => s.AmountSavings);
+            TotalSavings.Content = totalSavings.ToString("C");
+            EstimatedSavings();
+            RefreshSavingsTable();
+            connection.Close();
+        }
+        private void EstimatedSavings()
+        {
+            SQLiteConnection connection = new SQLiteConnection("Data Source=financeDB.sqlite3");
+            connection.Open();
+            string selectMonthlySavingsSQL = "SELECT SUM(SavingsAmount), strftime('%Y-%m', SavingsDate) AS MonthYear " +
+                                 "FROM Savings " +
+                                 "GROUP BY MonthYear";
+            SQLiteCommand selectMonthlySavingsCommand = new SQLiteCommand(selectMonthlySavingsSQL, connection);
+            SQLiteDataReader monthlySavingsReader = selectMonthlySavingsCommand.ExecuteReader();
+            //tworze pustą listę, która będzie przechowywać sumy oszczędności dla każdego miesiąca.
+            List<double> monthlySavingsList = new List<double>();
+            while (monthlySavingsReader.Read())
+            {
+                double monthlySavings = monthlySavingsReader.GetDouble(0);
+                monthlySavingsList.Add(monthlySavings);
+            }
+            monthlySavingsReader.Close();
+            double averageMonthlySavings = monthlySavingsList.Average();
+            double estimatedSavings = averageMonthlySavings * 12;
+            EstimatedSavingsLabel.Content = estimatedSavings.ToString("C");
             connection.Close();
         }
         private void CloseButton_Click(object sender, RoutedEventArgs e)
@@ -71,6 +96,34 @@ namespace ProjectWPF.Pages
         {
             
         };
+        private void RefreshSavingsTable()
+        {
+            SavingsList.Clear();
+            SQLiteConnection connection = new SQLiteConnection("Data Source=financeDB.sqlite3");
+            connection.Open();
+
+            string query = "SELECT * FROM Savings;";
+            SQLiteCommand command = new SQLiteCommand(query, connection);
+
+            SQLiteDataReader reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                Savings savings = new Savings()
+                {
+                    AmountSavings = reader.GetDouble(1),
+                    CategorySavings = reader.GetString(2),
+                    SourceSavings = reader.GetString(3),
+                    DateSavings = DateOnly.Parse(reader.GetString(4))
+                };
+                SavingsList.Add(savings);
+            }
+
+            connection.Close();
+
+            SavingsTable.ItemsSource = null;
+            SavingsTable.ItemsSource = SavingsList;
+        }
         private void DeleteSelectedSavingsRow_Click(object sender, RoutedEventArgs e)
         {
             Savings selectedIncome = SavingsTable.SelectedItem as Savings;
