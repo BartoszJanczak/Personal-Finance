@@ -86,40 +86,74 @@ namespace ProjectWPF.Pages
         };
         private void SaveExpenses_Click(object sender, RoutedEventArgs e)
         {
-            string expensesName = ExpensesNameTextBox.Text;
-            int expensesAmount = 0;
-            bool isExpensesAmountValid = int.TryParse(ExpensesAmountTextBox.Text, out expensesAmount);
-            string expensesCategory = ExpensesCategoryComboBox.Text;
-            DateOnly expensesDate = new DateOnly(ExpensesDatePicker.SelectedDate.Value.Year, ExpensesDatePicker.SelectedDate.Value.Month, ExpensesDatePicker.SelectedDate.Value.Day);
+            string expenseName = ExpensesNameTextBox.Text;
+            int expenseAmount = 0;
+            bool isExpenseAmountValid = int.TryParse(ExpensesAmountTextBox.Text, out expenseAmount);
+            string expenseCategory = ExpensesCategoryComboBox.Text;
+            DateOnly expenseDate = new DateOnly(ExpensesDatePicker.SelectedDate.Value.Year, ExpensesDatePicker.SelectedDate.Value.Month, ExpensesDatePicker.SelectedDate.Value.Day);
 
-            if (string.IsNullOrWhiteSpace(expensesName) && !isExpensesAmountValid)
+            if (string.IsNullOrWhiteSpace(expenseName) && !isExpenseAmountValid)
             {
                 ExpensesNameTextBox.BorderBrush = Brushes.Red;
                 ExpensesAmountTextBox.BorderBrush = Brushes.Red;
                 MessageBox.Show("Please enter a valid Expense name and Amount.");
                 return;
             }
-            else if (string.IsNullOrWhiteSpace(expensesName))
+            else if (string.IsNullOrWhiteSpace(expenseName))
             {
                 ExpensesNameTextBox.BorderBrush = Brushes.Red;
                 MessageBox.Show("Please enter a valid Expense name.");
                 return;
             }
-            else if (!isExpensesAmountValid)
+            else if (!isExpenseAmountValid)
             {
                 ExpensesAmountTextBox.BorderBrush = Brushes.Red;
                 MessageBox.Show("Please enter a valid Amount.");
                 return;
             }
-            Expenses newExpenses = new Expenses()
-            {
-                ExpenseName = expensesName,
-                ExpenseAmount = expensesAmount,
-                ExpenseCategory = expensesCategory,
-                ExpenseDate = expensesDate,
-            };
 
-            ExpensesList.Add(newExpenses);
+            SQLiteConnection connection = new SQLiteConnection("Data Source=financeDB.sqlite3");
+            connection.Open();
+
+            string query = "INSERT INTO Expenses (ExpenseName, ExpenseAmount, ExpenseCategory, ExpenseDate) VALUES (@ExpenseName, @ExpenseAmount, @ExpenseCategory, @ExpenseDate);";
+
+            SQLiteCommand command = new SQLiteCommand(query, connection);
+            command.Parameters.AddWithValue("@ExpenseName", expenseName);
+            command.Parameters.AddWithValue("@ExpenseAmount", expenseAmount);
+            command.Parameters.AddWithValue("@ExpenseCategory", expenseCategory);
+            command.Parameters.AddWithValue("@ExpenseDate", expenseDate.ToString("yyyy-MM-dd"));
+
+            command.ExecuteNonQuery();
+
+            connection.Close();
+
+            RefreshExpenseTable();
+        }
+        private void RefreshExpenseTable()
+        {
+            ExpensesList.Clear();
+            SQLiteConnection connection = new SQLiteConnection("Data Source=financeDB.sqlite3");
+            connection.Open();
+
+            string query = "SELECT * FROM Expenses;";
+            SQLiteCommand command = new SQLiteCommand(query, connection);
+
+            SQLiteDataReader reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                Expenses expenses = new Expenses()
+                {
+                    ExpenseName = reader.GetString(1),
+                    ExpenseAmount = reader.GetInt32(2),
+                    ExpenseCategory = reader.GetString(3),
+                    ExpenseDate = DateOnly.Parse(reader.GetString(4)),
+                };
+
+                ExpensesList.Add(expenses);
+            }
+
+            connection.Close();
 
             ExpensesTable.ItemsSource = null;
             ExpensesTable.ItemsSource = ExpensesList;
