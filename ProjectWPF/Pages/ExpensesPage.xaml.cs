@@ -184,13 +184,36 @@ namespace ProjectWPF.Pages
         }
         private void DeleteSelectedExpensesRow_Click(object sender, RoutedEventArgs e)
         {
-            Expenses selectedIncome = ExpensesTable.SelectedItem as Expenses;
-            if (selectedIncome != null)
+            Expenses selectedExpense = ExpensesTable.SelectedItem as Expenses;
+            if (selectedExpense != null)
             {
-                int index = ExpensesList.IndexOf(selectedIncome);
-                ExpensesList.RemoveAt(index);
+                SQLiteConnection connection = new SQLiteConnection("Data Source=financeDB.sqlite3");
+                connection.Open();
+
+                string query = "SELECT ID_Expense FROM Expenses WHERE ExpenseName = @ExpenseName AND ExpenseAmount = @ExpenseAmount AND ExpenseCategory = @ExpenseCategory AND ExpenseDate = @ExpenseDate ;";
+                SQLiteCommand command = new SQLiteCommand(query, connection);
+                command.Parameters.AddWithValue("@ExpenseName", selectedExpense.ExpenseName);
+                command.Parameters.AddWithValue("@ExpenseAmount", selectedExpense.ExpenseAmount);
+                command.Parameters.AddWithValue("@ExpenseCategory", selectedExpense.ExpenseCategory);
+                command.Parameters.AddWithValue("@ExpenseDate", selectedExpense.ExpenseDate.ToString("yyyy-MM-dd"));
+                int ExpenseID = Convert.ToInt32(command.ExecuteScalar());
+                
+                string deleteQuery = "DELETE FROM Expenses WHERE ID_Expense = @ID;";
+
+                SQLiteCommand deleteCommand = new SQLiteCommand(deleteQuery, connection);
+                deleteCommand.Parameters.AddWithValue("@ID", ExpenseID);
+
+                deleteCommand.ExecuteNonQuery();
+
+                connection.Close();
+
+                ExpensesList.Remove(selectedExpense);
+
+                RefreshExpenseTable();
+
+                FilterExpensesTextBox.Text = "";
                 ICollectionView view = CollectionViewSource.GetDefaultView(ExpensesTable.ItemsSource);
-                view.Refresh();
+                view.Filter = null;
             }
         }
     }
