@@ -126,13 +126,57 @@ namespace ProjectWPF.Pages
         }
         private void DeleteSelectedSavingsRow_Click(object sender, RoutedEventArgs e)
         {
-            Savings selectedIncome = SavingsTable.SelectedItem as Savings;
-            if (selectedIncome != null)
+            Savings selectedSavings = SavingsTable.SelectedItem as Savings;
+            if (selectedSavings != null)
             {
-                int index = SavingsList.IndexOf(selectedIncome);
-                SavingsList.RemoveAt(index);
-                ICollectionView view = CollectionViewSource.GetDefaultView(SavingsTable.ItemsSource);
-                view.Refresh();
+                // nawiązanie połączenia z bazą danych
+                SQLiteConnection connection = new SQLiteConnection("Data Source=financeDB.sqlite3");
+                connection.Open();
+
+                // pobranie Income_ID z bazy danych
+                string query = "SELECT ID_Savings FROM Savings WHERE round(SavingsAmount, 2) = round(@SavingsAmount, 2) AND SavingsCategory = @SavingsCategory AND SavingsSource = @SavingsSource AND SavingsDate = @SavingsDate;";
+                SQLiteCommand command = new SQLiteCommand(query, connection);
+                command.Parameters.AddWithValue("@SavingsAmount", selectedSavings.AmountSavings);
+                command.Parameters.AddWithValue("@SavingsCategory", selectedSavings.CategorySavings);
+                command.Parameters.AddWithValue("@SavingsSource", selectedSavings.SourceSavings);
+                command.Parameters.AddWithValue("@SavingsDate", selectedSavings.DateSavings.ToString("yyyy-MM-dd"));
+                int SavingsID = Convert.ToInt32(command.ExecuteScalar());
+
+                // przygotowanie zapytania SQL do usunięcia rekordu
+                string deleteQuery = "DELETE FROM Savings WHERE ID_Savings = @ID;";
+
+                // przygotowanie polecenia SQL i przypisanie wartości parametru
+                SQLiteCommand deleteCommand = new SQLiteCommand(deleteQuery, connection);
+                deleteCommand.Parameters.AddWithValue("@ID", SavingsID);
+
+                // wykonanie polecenia SQL
+                deleteCommand.ExecuteNonQuery();
+
+                // pobranie Income_ID z bazy danych
+                string incomeQuery = "SELECT ID_Income FROM Income WHERE IncomeCategory = @IncomeCategory AND IncomeName = @IncomeName AND IncomeDate = @IncomeDate;";
+                SQLiteCommand incomeCommand = new SQLiteCommand(incomeQuery, connection);
+                incomeCommand.Parameters.AddWithValue("@IncomeCategory", selectedSavings.CategorySavings);
+                incomeCommand.Parameters.AddWithValue("@IncomeName", selectedSavings.SourceSavings);
+                incomeCommand.Parameters.AddWithValue("@IncomeDate", selectedSavings.DateSavings.ToString("yyyy-MM-dd"));
+                int incomeID = Convert.ToInt32(incomeCommand.ExecuteScalar());
+
+                // zaktualizowanie SavingsAmount na 0 dla Income_ID pobranego z tabeli Income
+                string updateQuery = "UPDATE Income SET IncomeSavings = 0 WHERE ID_Income = @ID_Income;";
+                SQLiteCommand updateCommand = new SQLiteCommand(updateQuery, connection);
+                updateCommand.Parameters.AddWithValue("@ID_Income", incomeID);
+                updateCommand.ExecuteNonQuery();
+                // zamknięcie połączenia z bazą danych
+                connection.Close();
+
+                // usunięcie rekordu z listy (jeśli jest używana)
+                SavingsList.Remove(selectedSavings);
+
+                double totalSavings = SavingsList.Sum(s => s.AmountSavings);
+                TotalSavings.Content = totalSavings.ToString("C");
+                double estimatedSavings = totalSavings * 12;
+                EstimatedSavings();
+                // odświeżenie źródła danych dla tabeli
+                RefreshSavingsTable();
             }
         }
     }
