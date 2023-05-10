@@ -228,10 +228,58 @@ namespace ProjectWPF.Pages
             Income selectedIncome = IncomeTable.SelectedItem as Income;
             if (selectedIncome != null)
             {
-                int index = IncomeList.IndexOf(selectedIncome);
-                IncomeList.RemoveAt(index);
+                // nawiązanie połączenia z bazą danych
+                SQLiteConnection connection = new SQLiteConnection("Data Source=financeDB.sqlite3");
+                connection.Open();
+
+                // pobranie Income_ID z bazy danych
+                string query = "SELECT ID_Income FROM Income WHERE IncomeName = @IncomeName AND IncomeAmount = @IncomeAmount AND IncomeCategory = @IncomeCategory AND IncomeDate = @IncomeDate AND IncomeSavings = @IncomeSavings;";
+                SQLiteCommand command = new SQLiteCommand(query, connection);
+                command.Parameters.AddWithValue("@IncomeName", selectedIncome.IncomeName);
+                command.Parameters.AddWithValue("@IncomeAmount", selectedIncome.IncomeAmount);
+                command.Parameters.AddWithValue("@IncomeCategory", selectedIncome.IncomeCategory);
+                command.Parameters.AddWithValue("@IncomeDate", selectedIncome.IncomeDate.ToString("yyyy-MM-dd"));
+                command.Parameters.AddWithValue("@IncomeSavings", selectedIncome.IncomeSavings);
+                int incomeID = Convert.ToInt32(command.ExecuteScalar());
+
+                // przygotowanie zapytania SQL do usunięcia rekordu
+                string deleteQuery = "DELETE FROM Income WHERE ID_Income = @ID;";
+
+                // przygotowanie polecenia SQL i przypisanie wartości parametru
+                SQLiteCommand deleteCommand = new SQLiteCommand(deleteQuery, connection);
+                deleteCommand.Parameters.AddWithValue("@ID", incomeID);
+
+                // wykonanie polecenia SQL
+                deleteCommand.ExecuteNonQuery();
+
+                // pobranie Income_ID z bazy danych
+                if (selectedIncome.IncomeSavings > 0)
+                {
+                    string savingsQuery = "SELECT ID_Savings FROM Savings WHERE SavingsCategory = @SavingsCategory AND SavingsSource = @SavingsSource AND SavingsDate = @SavingsDate;";
+                    SQLiteCommand savingsCommand = new SQLiteCommand(savingsQuery, connection);
+                    savingsCommand.Parameters.AddWithValue("@SavingsCategory", selectedIncome.IncomeCategory);
+                    savingsCommand.Parameters.AddWithValue("@SavingsSource", selectedIncome.IncomeName);
+                    savingsCommand.Parameters.AddWithValue("@SavingsDate", selectedIncome.IncomeDate.ToString("yyyy-MM-dd"));
+                    int savingsID = Convert.ToInt32(savingsCommand.ExecuteScalar());
+
+                    // zaktualizowanie SavingsAmount na 0 dla Income_ID pobranego z tabeli Income
+                    string deleteQuery2 = "DELETE FROM Savings WHERE ID_Savings = @ID_Savings;";
+                    SQLiteCommand delete2Command = new SQLiteCommand(deleteQuery2, connection);
+                    delete2Command.Parameters.AddWithValue("@ID_Savings", savingsID);
+                    delete2Command.ExecuteNonQuery();
+                }
+                // zamknięcie połączenia z bazą danych
+                connection.Close();
+
+                // usunięcie rekordu z listy (jeśli jest używana)
+                IncomeList.Remove(selectedIncome);
+
+                // odświeżenie źródła danych dla tabeli
+                RefreshIncomeTable();
+                // usuwanie filtrowania
+                FilterTextBox.Text = "";
                 ICollectionView view = CollectionViewSource.GetDefaultView(IncomeTable.ItemsSource);
-                view.Refresh();
+                view.Filter = null;
             }
         }
     }
