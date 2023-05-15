@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Data.SQLite;
 
 namespace ProjectWPF.Pages
 {
@@ -23,6 +24,24 @@ namespace ProjectWPF.Pages
         public HomePage()
         {
             InitializeComponent();
+            // pobranie danych z bazy danych i obliczenie sumy oszczędności
+            SQLiteConnection connection = new SQLiteConnection("Data Source=financeDB.sqlite3");
+            connection.Open();
+            string selectDataSQL = "SELECT SUM(SavingsAmount) FROM Savings";
+            SQLiteCommand selectDataCommand = new SQLiteCommand(selectDataSQL, connection);
+            double totalSavings = Convert.ToDouble(selectDataCommand.ExecuteScalar());
+            TotalSavingsHome.Text = totalSavings.ToString("C");
+            string selectIncomeSQL = "SELECT SUM(IncomeAmount) FROM Income";
+            SQLiteCommand selectIncomeCommand = new SQLiteCommand(selectIncomeSQL, connection);
+            double totalIncome = Convert.ToDouble(selectIncomeCommand.ExecuteScalar());
+            TotalIncomeHome.Text = totalIncome.ToString("C");
+            string selectExpensesSQL = "SELECT SUM(ExpenseAmount) FROM Expenses";
+            SQLiteCommand selectExpensesCommand = new SQLiteCommand(selectExpensesSQL, connection);
+            double totalExpenses = Convert.ToDouble(selectExpensesCommand.ExecuteScalar());
+            TotalExpensesHome.Text = totalExpenses.ToString("C");
+            double totalProfit = totalIncome - totalExpenses;
+            TotalProfitHome.Text = totalProfit.ToString("C");
+            connection.Close();
         }
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {

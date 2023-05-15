@@ -35,22 +35,22 @@
                 <fa:ImageAwesome Icon="Dollar" Style="{StaticResource HomeButtonIcon}" Foreground="Green"/>
             </Button>
             <TextBlock Text="Total Income" Foreground="White" Margin="102,23,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="15"/>
-            <TextBlock Text="000" Foreground="White" Margin="102,43,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="15"/>
+            <TextBlock x:Name="TotalIncomeHome" Text="000" Foreground="White" Margin="102,43,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="15"/>
             <Button Style="{StaticResource NoChromeButtonStyle}" Margin="240,15,0,0" Width="50" Height="50" HorizontalAlignment="Left" VerticalAlignment="Top">
                 <fa:ImageAwesome Icon="ShoppingCart" Style="{StaticResource HomeButtonIcon}" Foreground="Red"/>
             </Button>
             <TextBlock Text="Total Expenses" Foreground="White" Margin="292,23,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="15"/>
-            <TextBlock Text="000" Foreground="White" Margin="292,43,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="15"/>
+            <TextBlock x:Name="TotalExpensesHome" Text="000" Foreground="White" Margin="292,43,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="15"/>
             <Button Style="{StaticResource NoChromeButtonStyle}" Margin="420,15,0,0" Width="50" Height="50" HorizontalAlignment="Left" VerticalAlignment="Top">
                 <fa:ImageAwesome Icon="Bank" Style="{StaticResource HomeButtonIcon}" Foreground="#2962FF"/>
             </Button>
             <TextBlock Text="Total Savings" Foreground="White" Margin="472,23,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="15"/>
-            <TextBlock Text="000" Foreground="White" Margin="472,43,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="15"/>
+            <TextBlock x:Name="TotalSavingsHome" Text="000" Foreground="White" Margin="472,43,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="15"/>
             <Button Style="{StaticResource NoChromeButtonStyle}" Margin="600,15,0,0" Width="50" Height="50" HorizontalAlignment="Left" VerticalAlignment="Top">
                 <fa:ImageAwesome Icon="LineChart" Style="{StaticResource HomeButtonIcon}" Foreground="#AA00FF"/>
             </Button>
             <TextBlock Text="Total Profits" Foreground="White" Margin="652,23,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="15"/>
-            <TextBlock Text="000" Foreground="White" Margin="652,43,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="15"/>
+            <TextBlock x:Name="TotalProfitHome" Text="000" Foreground="White" Margin="652,43,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="15"/>
             <Button Style="{StaticResource NoChromeButtonStyle}" Background="Green" HorizontalAlignment="Left" VerticalAlignment="Top" Width="303" Height="172" Margin="60, 100, 0, 0" Click="ManageIncome_Button">
                 <Grid>
                     <fa:ImageAwesome Icon="Dollar" Style="{StaticResource HomeButtonIcon}" HorizontalAlignment="Center" Margin="0, 40, 0, 0"/>
@@ -72,7 +72,7 @@
             <Button Style="{StaticResource NoChromeButtonStyle}" Background="Purple" HorizontalAlignment="Left" VerticalAlignment="Top" Width="302" Height="172" Margin="440, 330, 0, 0" Click="ShowProfits_Button">
                 <Grid>
                     <fa:ImageAwesome Icon="LineChart" Style="{StaticResource HomeButtonIcon}" HorizontalAlignment="Center" Margin="0, 40, 0, 0"/>
-                    <TextBlock Text="Show Profits" Foreground="White" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="30"/>
+                    <TextBlock Text="Show Reports" Foreground="White" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="30"/>
                 </Grid>
             </Button>
         </Grid>
