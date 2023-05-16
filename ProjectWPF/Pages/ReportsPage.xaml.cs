@@ -1,6 +1,7 @@
 ﻿using LiveCharts;
 using System;
 using System.Collections.Generic;
+using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,6 +29,23 @@ namespace ProjectWPF.Pages
                 string.Format("{0} ({1:P})", chartPoint.Y, chartPoint.Participation);
 
             DataContext = this;
+            // pobranie danych z bazy danych i obliczenie sumy oszczędności
+            SQLiteConnection connection = new SQLiteConnection("Data Source=financeDB.sqlite3");
+            connection.Open();
+            string selectDataSQL = "SELECT SUM(SavingsAmount) FROM Savings";
+            SQLiteCommand selectDataCommand = new SQLiteCommand(selectDataSQL, connection);
+            double totalSavings = Convert.ToDouble(selectDataCommand.ExecuteScalar());
+            TotalSavingsReports.Text = totalSavings.ToString("C");
+            string selectIncomeSQL = "SELECT SUM(IncomeAmount) FROM Income";
+            SQLiteCommand selectIncomeCommand = new SQLiteCommand(selectIncomeSQL, connection);
+            double totalIncome = Convert.ToDouble(selectIncomeCommand.ExecuteScalar());
+            TotalIncomeReports.Text = totalIncome.ToString("C");
+            string selectExpensesSQL = "SELECT SUM(ExpenseAmount) FROM Expenses";
+            SQLiteCommand selectExpensesCommand = new SQLiteCommand(selectExpensesSQL, connection);
+            double totalExpenses = Convert.ToDouble(selectExpensesCommand.ExecuteScalar());
+            TotalExpensesReports.Text = totalExpenses.ToString("C");
+            double totalProfit = totalIncome - totalExpenses;
+            TotalProfitReports.Text = totalProfit.ToString("C");
         }
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
